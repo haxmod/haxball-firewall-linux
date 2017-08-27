@@ -1,6 +1,7 @@
 // UDP Gaming Firewall
 
 #include "ban.h"
+#include "haxball_whitelist.h"
 #include <arpa/inet.h>
 #include <libnetfilter_queue/libnetfilter_queue.h>
 #include <linux/netfilter.h>
@@ -14,8 +15,9 @@
 #include <sys/socket.h>
 #include <time.h>
 #include <unistd.h>
+#include <string.h>
 
-AttackFirewall fw(NULL, NULL);
+AttackFirewall fw;
 
 static u_int32_t verdict_pkt(struct nfq_data *tb, u_int32_t *verdict)
 {
@@ -67,6 +69,14 @@ int main(int argc, char **argv)
     struct rlimit core_limits;
     core_limits.rlim_cur = core_limits.rlim_max = RLIM_INFINITY;
     setrlimit(RLIMIT_CORE, &core_limits);
+    for (int i = 1; i < argc; i++)
+    {
+        if (strcmp(argv[i], "--block-data-centers") == 0)
+        {
+            fprintf(stderr, "Blocking data center IP ranges.\n");
+            fw.SetBlacklist(&DataCenters, &HaxBallMatcher);
+        }
+    }
 
     struct nfq_handle *h;
     struct nfq_q_handle *qh;

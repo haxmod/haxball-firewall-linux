@@ -12,3 +12,6 @@ Then `cd haxball-firewall-linux` and compile the program using `make`. You may n
 Run the script `filter.sh` as `root` before starting the actual firewall. It will create a new `iptables` rule delegating the decision of dropping UDP packets to the firewall program using NFQUEUE. The filter script should only be executed once per computer start. After restarting the computer, the script has to be run again because `iptables` rules are not persistent.
 
 Finally, simply run the firewall as root using `./bin/firewall`. It will prevent multiport UDP denial of service attacks as well as packet flood attacks. If you would like to run the program in the background, you can make use of `nohup`.
+
+## Support for blocking IP ranges from data centers
+Use the `--block-data-centers` flag in order to block IP address ranges from data centers. This will ban most shady users that use proxies and VPN servers for playing HaxBall. They will not be able to connect to your room.
